@@ -2,8 +2,10 @@
  * @jest-environment jsdom
  */
 
+// const { test } = require("picomatch")
+// const { describe } = require("yargs")
 
-const { game, newGame, showScore } = require("../game")
+const { game, newGame, showScore, addTurn, lightsActivated } = require("../game")
 
 // Opening the HTML file
 beforeAll(() => {
@@ -21,6 +23,9 @@ describe(" game object contains correct keys", () => {
     test("currentGame key exists", () => {
         expect("currentGame" in game).toBe(true);
     });
+    test("check for a move within the computers move array", () => {
+        expect(game.currentGame.length).toBe(1)
+    })
     test("playerMoves key exists", () => {
         expect("playerMoves" in game).toBe(true);
     });
@@ -54,5 +59,28 @@ describe("new game test", () => {
     })
     test("Check text value of the score", () => {
         expect(document.getElementById("score").innerText).toEqual(0)
+    })
+})
+
+describe("gameplay works correctly", () => {
+    beforeEach (() => {
+        game.score = 0
+        game.currentGame = []
+        game.playerMoves = []
+        addTurn()
+    })
+    afterEach(() => {
+        game.score = 0
+        game.currentGame = []
+        game.playerMoves = []
+    })
+    test("addTurn add a new turn to the game", () => {
+        addTurn()
+        expect(game.currentGame.length).toBe(2)
+    })
+    test("has the correct class been added to the element to light it up?", () => {
+        let button = document.getElementById(game.currentGame[0])
+        lightsActivated(game.currentGame[0])
+        expect(button.classList).toContain("light")
     })
 })
